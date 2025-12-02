@@ -29,7 +29,7 @@ class ArticleController extends Controller
         Article::create($data);
 
         return redirect()->route('articles.index')
-            ->with('status', '✅ Article créé avec succès.');
+            ->with('status', 'Article créé avec succès.');
     }
 
     public function edit(Article $article): View
@@ -44,13 +44,13 @@ class ArticleController extends Controller
         $article->update($data);
 
         return redirect()->route('articles.index')
-            ->with('status', '✏️ Article mis à jour.');
+            ->with('status', 'Article mis à jour.');
     }
 
     public function destroy(Article $article): RedirectResponse
     {
         $article->delete();
         return redirect()->route('articles.index')
-            ->with('status', '🗑️ Article supprimé.');
+            ->with('status', 'Article supprimé.');
     }
 }
