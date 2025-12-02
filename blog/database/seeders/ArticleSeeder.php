@@ -13,12 +13,12 @@ class ArticleSeeder extends Seeder
         $path = storage_path('seeds/articles.csv');
 
         if (! file_exists($path)) {
-            $this->command->warn("⚠️  Fichier manquant : $path (seed ignoré)");
+            $this->command->warn("Fichier manquant : $path (seed ignoré)");
             return;
         }
 
         if (($handle = fopen($path, 'r')) === false) {
-            $this->command->error('❌ Impossible d’ouvrir le fichier CSV.');
+            $this->command->error('Impossible d’ouvrir le fichier CSV.');
             return;
         }
 
@@ -45,6 +45,6 @@ class ArticleSeeder extends Seeder
 
         fclose($handle); // Close the File
 
-        $this->command->info('✅ Articles importés avec succès depuis le CSV.'); // Prints a success message in the console.
+        $this->command->info('Articles importés avec succès depuis le CSV.'); // Prints a success message in the console.
     }
 }
