@@ -30,7 +30,7 @@
 | -------------------------------- | -------- | ------ | --------------------------------- |
 | Lire les articles publics        | ✔️       | ✔️     | ✔️                                |
 | Accéder au dashboard /admin      | ❌        | ✔️     | ✔️                                |
-| Créer un article                 | ❌        | ✔️     | ❌ *(selon consigne fil rouge V6)* |
+| Créer un article                 | ❌        | ✔️     | ✔️ |
 | Modifier ses propres articles    | ❌        | ✔️     | ✔️                                |
 | Modifier n’importe quel article  | ❌        | ❌      | ✔️                                |
 | Supprimer ses propres articles   | ❌        | ✔️     | ✔️                                |
