@@ -50,3 +50,22 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+// Route::get('/admin', function () {
+//     return view('admin.dashboard');
+// })->name('admin.dashboard');
+
+
+Route::get('/admin', function () {
+    return view('admin.dashboard');
+})->middleware('auth')->name('admin.dashboard');
+
+
+// Route::middleware('auth')->group(function () {
+//     Route::get('/admin', function () {
+//         return view('admin.dashboard');
+//     })->name('admin.dashboard');
+
+//     // Exemple : route future pour gérer les articles en admin
+//     // Route::get('/admin/articles', [ArticleAdminController::class, 'index'])
+//     //     ->name('admin.articles.index');
+// });

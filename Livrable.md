@@ -1,24 +1,31 @@
-# Livrable Tutoriel 3.2.2 — Activer Laravel UI
+# Tutoriel 3.2.3 — Protéger l’espace d’administration avec le middleware `auth`
 
-**Projet :** Fil rouge Laravel (Blog)  
-**Objectif :** Authentification fonctionnelle (login / register / logout)
+## Qu’est-ce qu’un middleware ?
 
-## Commandes utilisées
-```bash
-composer require laravel/ui
-php artisan ui:auth
-npm install
-npm run dev
-````
+Un **middleware** dans Laravel est un “gardien” qui intercepte une requête **avant** qu’elle n’atteigne une route ou un contrôleur.
+Il peut décider de laisser passer, rediriger ou bloquer l’accès.
 
-## URL pour tester
+## Le rôle du middleware `auth`
 
-* Page de connexion : [http://127.0.0.1:8000/login](http://127.0.0.1:8000/login)
-* Page d’inscription : [http://127.0.0.1:8000/register](http://127.0.0.1:8000/register)
+Le middleware **auth** vérifie si un utilisateur est connecté :
 
-## Résultats
+* **Utilisateur connecté** → accès autorisé
+* **Non connecté** → redirection automatique vers `/login`
 
-* Les pages `/login` et `/register` s’affichent correctement.
-* L’inscription crée bien un utilisateur dans la table `users`.
-* La connexion et la déconnexion fonctionnent correctement.
+## Où j’ai ajouté la protection ?
+
+Dans le fichier **`routes/web.php`**, j’ai protégé la route `/admin` en ajoutant :
+
+```php
+Route::get('/admin', function () {
+    return view('admin.dashboard');
+})->middleware('auth')->name('admin.dashboard');
+```
+
+##  Résultat
+
+* Si je vais sur **/admin** sans être connecté → je suis redirigé vers **/login**.
+* Si je suis connecté → la page **admin/dashboard.blade.php** s’affiche correctement.
+
+---
 
