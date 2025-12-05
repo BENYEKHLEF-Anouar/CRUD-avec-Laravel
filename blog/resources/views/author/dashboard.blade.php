@@ -6,17 +6,17 @@
     {{-- Page Header --}}
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900">
-            {{ __('Espace d’administration') }}
+            {{ __('Espace Auteur') }}
         </h1>
         <p class="mt-2 text-sm text-gray-600">
-            {{ __('Manage your account and view your permissions.') }}
+            {{ __('Manage your articles and view your permissions.') }}
         </p>
     </div>
 
-    {{-- Dashboard Grid --}}
+    {{-- Dashboard Grid (Simplified for Author) --}}
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
         
-        {{-- Profile Card --}}
+        {{-- Profile Card (Same as Admin Dashboard) --}}
         <div class="lg:col-span-3 bg-white overflow-hidden shadow-md rounded-xl">
             <div class="p-8">
                 @auth
@@ -80,20 +80,22 @@
 
     {{-- Article Management Table --}}
     @auth
-        @if (Auth::user()->is_admin)
+        @if (!Auth::user()->is_admin) {{-- Only for Authors --}}
             <div class="mt-8">
                 <div class="sm:flex sm:items-center sm:justify-between mb-4">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-900">{{ __('Gérer les articles') }}</h2>
-                        <p class="mt-1 text-sm text-gray-700">Modifiez ou supprimez des articles directement depuis cette page.</p>
+                        <h2 class="text-2xl font-bold text-gray-900">{{ __('Gérer mes articles') }}</h2>
+                        <p class="mt-1 text-sm text-gray-700">Modifiez ou supprimez vos articles directement depuis cette page.</p>
                     </div>
                     <div class="mt-4 sm:mt-0">
+                        @can('create-article')
                         <a href="{{ route('articles.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
                             <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
                             Nouvel article
                         </a>
+                        @endcan
                     </div>
                 </div>
                 @include('admin.partials.articles_table', ['articles' => $articles])

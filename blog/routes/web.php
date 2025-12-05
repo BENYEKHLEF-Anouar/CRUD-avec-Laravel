@@ -62,11 +62,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::middleware('auth')->group(function () {
 
-    Route::resource('articles', ArticleController::class)->except(['show']);
+    Route::resource('articles', ArticleController::class);
     
-    Route::get('/admin', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-
+    Route::get('/admin', [App\Http\Controllers\HomeController::class, 'adminIndex'])->name('admin.dashboard');
+    Route::get('/author/dashboard', [App\Http\Controllers\HomeController::class, 'authorIndex'])->name('author.dashboard');
 
 });
