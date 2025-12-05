@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Article;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -10,6 +11,12 @@ class ArticleSeeder extends Seeder
 {
     public function run(): void
     {
+        $user = User::first(); // Get the first user
+        if (!$user) {
+            $this->command->error('No users found. Please seed users first.');
+            return;
+        }
+
         $path = storage_path('seeds/articles.csv');
 
         if (! file_exists($path)) {
@@ -35,6 +42,7 @@ class ArticleSeeder extends Seeder
             Article::updateOrCreate(
                 ['slug' => $slug],
                 [
+                    'user_id'   => $user->id,
                     'title'     => $title,
                     'excerpt'   => $data['excerpt'] ?? null,
                     'views'     => (int)($data['views'] ?? 0),

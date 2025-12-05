@@ -6,7 +6,7 @@ use App\Models\Article;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
-class AuthServiceProvidercls extends ServiceProvider
+class AuthServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
