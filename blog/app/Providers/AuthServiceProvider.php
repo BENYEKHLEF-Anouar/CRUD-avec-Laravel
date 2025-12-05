@@ -25,5 +25,15 @@ class AuthServiceProvider extends ServiceProvider
             // Auteur → peut supprimer seulement ses propres articles
             return $article->user_id === $user->id;
         });
+
+        Gate::define('update-article', function ($user, Article $article) {
+            // Admin → peut tout modifier
+            if ($user->is_admin) {
+                return true;
+            }
+
+            // Auteur → peut modifier seulement ses propres articles
+            return $article->user_id === $user->id;
+        });
     }
 }
