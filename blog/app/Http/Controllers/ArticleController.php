@@ -9,6 +9,8 @@ use Illuminate\View\View;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
 
+use Illuminate\Support\Facades\Gate;
+
 class ArticleController extends Controller
 {
     public function index(): View
@@ -24,6 +26,11 @@ class ArticleController extends Controller
 
     public function store(StoreArticleRequest $request): RedirectResponse
     {
+
+        if (! Gate::allows('create-article')) {
+            abort(403);
+        }
+
         $data = $request->validated();
         $data['slug'] ??= Str::slug($data['title']);
         Article::create($data);
@@ -49,8 +56,16 @@ class ArticleController extends Controller
 
     public function destroy(Article $article): RedirectResponse
     {
+
+        if (! Gate::allows('delete-article', $article)) {
+            abort(403);
+        }
+
+        // Suppression autorisée :
         $article->delete();
-        return redirect()->route('articles.index')
-            ->with('status', 'Article supprimé.');
-    }
+
+        return redirect()->back()->with('status', 'Article supprimé avec succès.');
+
+
+}
 }
