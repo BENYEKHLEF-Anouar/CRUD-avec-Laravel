@@ -27,12 +27,14 @@ class ArticleController extends Controller
     public function store(StoreArticleRequest $request): RedirectResponse
     {
 
-        if (! Gate::allows('create-article')) {
+        if (!Gate::allows('create-article')) {
             abort(403);
         }
 
         $data = $request->validated();
         $data['slug'] ??= Str::slug($data['title']);
+        $data['user_id'] = \Illuminate\Support\Facades\Auth::id();
+
         Article::create($data);
 
         return redirect()->route('articles.index')
@@ -57,7 +59,7 @@ class ArticleController extends Controller
     public function destroy(Article $article): RedirectResponse
     {
 
-        if (! Gate::allows('delete-article', $article)) {
+        if (!Gate::allows('delete-article', $article)) {
             abort(403);
         }
 
@@ -67,5 +69,5 @@ class ArticleController extends Controller
         return redirect()->back()->with('status', 'Article supprimé avec succès.');
 
 
-}
+    }
 }

@@ -1,70 +1,48 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ArticleController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', fn() => redirect()->route('articles.index'));
-// Route::resource('articles', ArticleController::class)->except(['show']);
+// --- Public Routes ---
+Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/a-propos', [PageController::class, 'about'])->name('about');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
-// Routes nommées avec contrôleur
-// Route::get('/', [PageController::class, 'home'])->name('home');
-// Route::get('/a-propos', [PageController::class, 'about'])->name('about');
+// Public Article Read Access
+Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('articles.show'); // Using model binding 'article' (slug)
 
-// Mini-routes articles (mockées pour l’instant)
-// Route::get('/articles', [PageController::class, 'articles'])->name('articles.index');
-
-// Route::get('/articles/create', [ArticleController::class, 'create'])->name('articles.create'); // Shows form
-// Route::post('/articles',        [ArticleController::class, 'store'])->name('articles.store'); // Save new article (form submission)
-
-// Route::get('/articles/{slug}', [PageController::class, 'show'])->name('articles.show');
-
-// Route::get('/contact', [PageController::class, 'contact'])->name('contact');
-
-
-//  http://localhost:8000/ping
-
-
-
-// -----------------------
-
-// use Illuminate\Support\Facades\Route;
-// use App\Http\Controllers\PageController;
-// use App\Http\Controllers\ArticleController;
-
-// // Home
-// Route::get('/', [PageController::class, 'home'])->name('home');
-
-// // Static pages
-// Route::get('/a-propos', [PageController::class, 'about'])->name('about');
-// Route::get('/contact',  [PageController::class, 'contact'])->name('contact');
-
-// // Articles
-// Route::resource('articles', ArticleController::class)->parameters([
-//     'articles' => 'slug'
-// ]);
-
-
+// Authentication Routes
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// --- Authenticated Routes (Common) ---
+Route::middleware(['auth'])->group(function () {
 
-// Route::get('/admin', function () {
-//     return view('admin.dashboard');
-// })->name('admin.dashboard');
+    // Default Redirect / Dashboard Main Entry
+    Route::get('/home', [HomeController::class, 'index'])->name('dashboard_home');
 
+    // Article Management (Create, Store, Edit, Update, Destroy)
+    // Note: 'index' and 'show' are public, so we exclude them here.
+    // Policies (AuthServiceProvider) determine if User can actually perform these actions.
+    Route::resource('articles', ArticleController::class)->except(['index', 'show']);
 
-// Route::get('/admin', function () {
-//     return view('admin.dashboard');
-// })->middleware('auth')->name('admin.dashboard');
+    // --- Author Specific ---
+    Route::prefix('author')->name('author.')->group(function () {
+        Route::get('/dashboard', [HomeController::class, 'authorIndex'])->name('dashboard');
+    });
 
+});
 
-Route::middleware('auth')->group(function () {
+// --- Admin Only Routes ---
+Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(function () {
 
-    Route::resource('articles', ArticleController::class);
-    
-    Route::get('/admin', [App\Http\Controllers\HomeController::class, 'adminIndex'])->name('admin.dashboard');
-    Route::get('/author/dashboard', [App\Http\Controllers\HomeController::class, 'authorIndex'])->name('author.dashboard');
+    // Dashboard at /admin
+    Route::get('/', [HomeController::class, 'adminIndex'])->name('dashboard');
+
+    // Future: User Management, etc.
+    // Route::resource('users', UserController::class);
 
 });
