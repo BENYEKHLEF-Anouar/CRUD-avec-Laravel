@@ -8,7 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class ArticleController extends Controller
@@ -32,6 +32,7 @@ class ArticleController extends Controller
         }
 
         $data = $request->validated();
+        $data['user_id'] = auth()->id();
         $data['slug'] ??= Str::slug($data['title']);
         Article::create($data);
 
@@ -54,18 +55,12 @@ class ArticleController extends Controller
             ->with('status', 'Article mis à jour.');
     }
 
-    public function destroy(Article $article): RedirectResponse
+    public function destroy(Article $article)
     {
+        $this->authorize('delete', $article);
 
-        if (! Gate::allows('delete-article', $article)) {
-            abort(403);
-        }
-
-        // Suppression autorisée :
         $article->delete();
 
         return redirect()->back()->with('status', 'Article supprimé avec succès.');
-
-
-}
+    }
 }
